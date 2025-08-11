@@ -7,30 +7,32 @@
     body {
       margin: 0;
       font-family: sans-serif;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
     }
     #player {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px;
-      font-size: 14px;
+      justify-content: center;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 4px 6px;
+      height: 40px;
+      box-sizing: border-box;
     }
     button {
       background: none;
       border: none;
+      font-size: 14px;
       cursor: pointer;
-      font-size: 16px;
+      margin: 0 4px;
     }
     input[type=range] {
+      margin: 0 4px;
       height: 3px;
     }
     #seek {
-      width: 100px;
+      flex: 1;
+      max-width: 100px;
     }
     #volume {
       width: 40px;
