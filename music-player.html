@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Music Player</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    #player {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px;
+      font-size: 14px;
+    }
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    input[type=range] {
+      height: 3px;
+    }
+    #seek {
+      width: 100px;
+    }
+    #volume {
+      width: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div id="player">
+    <button id="prev">⏮</button>
+    <button id="play">▶</button>
+    <button id="next">⏭</button>
+    <input type="range" id="seek" value="0" min="0" max="100">
+    <span id="time">0:00</span>
+    <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+  </div>
+
+  <script>
+    const playlist = [
+      'https://cdn.shopify.com/s/files/1/0621/1770/7847/files/music4.mp3?v=1754872989',
+      'https://cdn.shopify.com/s/files/1/0621/1770/7847/files/music2.mp3?v=1754872990',
+      'https://cdn.shopify.com/s/files/1/0621/1770/7847/files/music3.mp3?v=1754872991'
+    ];
+    let currentTrack = 0;
+    const audio = new Audio(playlist[currentTrack]);
+    audio.volume = 0.5;
+    audio.loop = false;
+
+    const playBtn = document.getElementById('play');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const seekBar = document.getElementById('seek');
+    const timeLabel = document.getElementById('time');
+    const volumeSlider = document.getElementById('volume');
+
+    playBtn.onclick = () => {
+      if (audio.paused) {
+        audio.play();
+        playBtn.textContent = '⏸';
+      } else {
+        audio.pause();
+        playBtn.textContent = '▶';
+      }
+    };
+
+    prevBtn.onclick = () => {
+      currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+      audio.src = playlist[currentTrack];
+      audio.play();
+    };
+
+    nextBtn.onclick = () => {
+      currentTrack = (currentTrack + 1) % playlist.length;
+      audio.src = playlist[currentTrack];
+      audio.play();
+    };
+
+    audio.addEventListener('play', () => playBtn.textContent = '⏸');
+    audio.addEventListener('pause', () => playBtn.textContent = '▶');
+
+    audio.addEventListener('timeupdate', () => {
+      seekBar.value = (audio.currentTime / audio.duration) * 100 || 0;
+      const m = Math.floor(audio.currentTime / 60);
+      const s = Math.floor(audio.currentTime % 60).toString().padStart(2,'0');
+      timeLabel.textContent = `${m}:${s}`;
+    });
+
+    seekBar.oninput = () => {
+      audio.currentTime = (seekBar.value / 100) * audio.duration;
+    };
+
+    volumeSlider.oninput = () => {
+      audio.volume = volumeSlider.value;
+    };
+
+    audio.addEventListener('ended', () => {
+      currentTrack = (currentTrack + 1) % playlist.length;
+      audio.src = playlist[currentTrack];
+      audio.play();
+    });
+
+    // Autoplay engelini aşmak için ilk tıklamada başlat
+    document.addEventListener('click', () => {
+      if (audio.paused) audio.play().catch(() => {});
+    }, { once: true });
+  </script>
+</body>
+</html>
